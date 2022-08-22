@@ -7,7 +7,6 @@ let initWebRoutes = (app) => {
     router.get('/', homeController.getHomePage); 
     router.get('/crud', homeController.getCRUD)
     router.post('/post-crud', homeController.postCRUD);
-
     router.get('/get-crud', homeController.displayCRUD);
 
     router.post('/api/login', userController.handleLogin);
@@ -15,6 +14,8 @@ let initWebRoutes = (app) => {
     router.post('/api/create-new-user', userController.handleCreateNewUser);
     router.put('/api/edit-user', userController.handleEditUser);
     router.delete('/api/delete-user', userController.handleDeleteUser);
+
+    router.get('/allcode', userController.getAllCode);
 
     return app.use("/", router);
 }
