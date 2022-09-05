@@ -28,11 +28,12 @@ let getTopDoctorHome = (limitInput) => {
 let getAllDoctors = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            let doctors = await db.Users.findAll({
+            let doctors = await db.User.findAll({
                 where: { roleId : 'R2' },
                 attributes: {
                     exclude : ['password', 'image']
-                }
+                },
+                raw: true
             })
             resolve ({
                 errCode : 0,
@@ -52,7 +53,7 @@ let saveInforDoctor = (inputData) => {
                     errMessage: 'Missing parameter'
                 })
             }else{
-                await db.Markdown.save({
+                await db.Markdown.create({
                     contentHTML : inputData.contentHTML,
                     contentMarkdown : inputData.contentMarkdown,
                     description : inputData.description,
