@@ -1,5 +1,5 @@
 import db from "../models/index";
-import lodash, { reject } from 'lodash';
+import lodash from 'lodash';
 require('dotenv').config();
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE;
 let getTopDoctorHome = (limitInput) => {
@@ -50,7 +50,8 @@ let getAllDoctors = () => {
 let saveDetailInforDoctor = (inputData) => {
     return new Promise(async(resolve, reject) => {
         try {
-            if(!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown || !inputData.action){
+            if(!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown 
+                || !inputData.action || !inputData.selectedPrice || !inputData.selectedPayment || !inputData.selectProvince || !inputData.nameClinic || !inputData.addressClinic){
                 resolve({
                     errCode : 1,
                     errMessage: 'Missing parameter'
@@ -76,12 +77,38 @@ let saveDetailInforDoctor = (inputData) => {
                         await doctorInfor.save();
                     }
                 }
-                
+
+                let doctor = await db.Doctor_Infor.findOne({
+                        where : {
+                            doctorId : inputData.doctorId
+                        },
+                        raw : false
+                    })
+                    if(doctor){
+                        doctor.doctorId = inputData.doctorId;
+                        doctor.priceId = inputData.selectedPrice;
+                        doctor.provinceId = inputData.selectProvince;
+                        doctor.paymentId = inputData.selectedPayment;
+                        doctor.nameClinic = inputData.nameClinic;
+                        doctor.addressClinic = inputData.addressClinic;
+                        doctor.note = inputData.note;
+                        await doctor.save();
+                    }else {
+                        await db.Doctor_Infor.create({
+                            doctorId : inputData.doctorId,
+                            priceId : inputData.selectedPrice,
+                            provinceId : inputData.selectProvince,
+                            paymentId : inputData.selectedPayment,
+                            nameClinic : inputData.nameClinic,
+                            addressClinic : inputData.addressClinic,
+                            note : inputData.note
+                        })
+                    }
+                }
                 resolve({
                     errCode: 0,
                     errMessage: 'Save infor doctor succed!'
                 })
-            }
         } catch (error) {
             reject(error);
         }
@@ -126,7 +153,7 @@ let getDetailDoctorById = (inputId) => {
 let bulkCreateSchedule = (data) => {
     return new Promise(async(resolve, reject)=>{
         try {
-            if(!data.arrSchedule || !data.doctorId || !data.fomatedDate){
+            if(!data.arrSchedule || !data.doctorId || !data.formatedDate){
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing required param !'
@@ -140,7 +167,7 @@ let bulkCreateSchedule = (data) => {
                     })
                 }
                 let scheduleExisting = await db.Schedule.findAll({
-                    where:  {doctorId: data.doctorId, date: data.fomatedDate},
+                    where:  {doctorId: data.doctorId, date: data.formatedDate},
                     attributes: ['timeType', 'date', 'doctorId','maxNumber'],
                     raw: true
                 });
@@ -180,7 +207,7 @@ let getScheduleByDate = (doctorId, date) => {
                     raw: false,
                     nest: true
                 })
-                if(!data) data = [];
+                if(!schedules) data = [];
                 resolve({
                     errCode : 0,
                     data: schedules
