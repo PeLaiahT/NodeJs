@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     specialtyId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Clinic',
+    modelName: 'Doctor_Clinic_Specialty',
   });
   return Doctor_Clinic_Specialty;
 };
