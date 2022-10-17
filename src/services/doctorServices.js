@@ -212,6 +212,7 @@ let getScheduleByDate = (doctorId, date) => {
                     },
                     include: [
                         { model: db.Allcode, as: 'timeTypeData', attributes: ['valueEn','valueVi']},
+                        { model: db.User, as: 'doctorData', attributes: ['firstName','lastName']},
                     ],
                     raw: false,
                     nest: true
@@ -236,7 +237,7 @@ let getExtraInforDoctorById = (inputId) => {
                     errMessage: 'Missing required parameters'
                 })
             } else {
-                let doctorInfor = db.Doctor_Infor.findOne({
+                let doctorInfor = await db.Doctor_Infor.findOne({
                     where: {
                         doctorId : inputId
                     },
@@ -271,9 +272,9 @@ let getProfileDoctorById = (inputId) => {
                     errMessage: 'Missing required parameters'
                 })
             } else {
-                let doctor = db.User.findOne({
+                let doctor = await db.User.findOne({
                     where: {
-                        doctorId : inputId
+                        id : inputId
                     },
                     attributes: {
                         exclude: ['password']
@@ -285,6 +286,7 @@ let getProfileDoctorById = (inputId) => {
                                 exclude: ['id', 'doctorId']
                             },
                             include: [
+                                {model: db.Markdown, attributes: ['description', 'contentHTML', 'contentMarkdown']},
                                 {model: db.Allcode, as: 'priceTypeData', attributes: ['valueEn', 'valueVi']},
                                 {model: db.Allcode, as: 'provinceTypeData', attributes: ['valueEn', 'valueVi']},
                                 {model: db.Allcode, as: 'paymentTypeData', attributes: ['valueEn', 'valueVi']},
