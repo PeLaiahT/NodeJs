@@ -2,10 +2,9 @@ import db from "../models/index";
 require('dotenv').config();
 import emailService from './emailService'
 import { v4 as uuidv4 } from 'uuid'
-import { reject } from "lodash";
 
 let buildUrlEmail = (doctorId, token) => {
-    let result = `${process.env.URL_REACT}/verify-booking/token=${token}&doctorId=${doctorId}`
+    let result = `${process.env.URL_REACT}/verify-booking?token=${token}&doctorId=${doctorId}`
     return result;
 }
 let postBookAppointment = (data) => {
@@ -58,7 +57,7 @@ let postBookAppointment = (data) => {
         }
     })
 }
-let postVerifyBookAppointment = () => {
+let postVerifyBookAppointment = (data) => {
     return new Promise(async(resolve, reject) => {
         try {
             if(!data.token || !data.doctorId){
