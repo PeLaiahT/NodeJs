@@ -1,7 +1,7 @@
 import db from "../models/index";
-import lodash, { reject } from 'lodash';
 require('dotenv').config();
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE;
+import emailService from '../services/emailService'
 let getTopDoctorHome = (limitInput) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -10,7 +10,7 @@ let getTopDoctorHome = (limitInput) => {
             where: {roleId: 'R2'},
             order: [['createdAt', 'DESC']],
             attributes: {
-                exclude: ['password', 'image']
+                exclude: ['password']
             },
             include: [
                 {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']},
@@ -34,7 +34,7 @@ let getAllDoctors = () => {
             let doctors = await db.User.findAll({
                 where: { roleId : 'R2' },
                 attributes: {
-                    exclude : ['password', 'image']
+                    exclude : ['password']
                 },
                 raw: true
             })
@@ -330,6 +330,83 @@ let getProfileDoctorById = (inputId) => {
         }
     })
 }
+let getListPatientForDoctor = (doctorId,date) => {
+    return new Promise(async(resolve,reject)=>{
+        try {
+            if(!doctorId || !date){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameter'
+                })
+            }else{
+                let data = await db.Booking.findAll({
+                    where: {
+                        statusId: 'S2',
+                        doctorId: doctorId,
+                        date: date
+                    },
+                    include: [
+                        {
+                            model: db.User, as:'patientData',
+                            attributes: ['email','firstName','address','gender'],
+                            include: [
+                                {
+                                    model: db.Allcode, as: 'genderData', attributes: ['valueEn','valueVi'],
+                                }
+                            ]
+                        },
+                        {
+                            model: db.Allcode, as: 'timeTypeDataPatient', attributes: ['valueEn',]
+                        }
+                    ],
+                    raw: false,
+                    nest: true
+                })
+                resolve({
+                    errCode: 0,
+                    errMessage: 'OK',
+                    data: data
+                })
+            }
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+let sendRemedy = (data) => {
+    return new Promise(async(resolve,reject)=>{
+        try {
+            if(!data.email || !data.doctorId || !data.patientId || !data.timeType || !data.imgBase64){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters'
+                })
+            }else {
+                let appointment = await db.Booking.findOne({
+                    where: {
+                        doctorId : data.doctorId,
+                        patientId: data.patientId,
+                        timeType: data.timeType,
+                        statusId: 'S2'
+                    },
+                    raw: false
+                })
+                if(appointment){
+                    appointment.statusId = 'S3'
+                    await appointment.save();
+                }
+                await emailService.sendAttachment(data);
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'OK'
+                })
+            }
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctors : getAllDoctors,
@@ -338,6 +415,7 @@ module.exports = {
     bulkCreateSchedule : bulkCreateSchedule,
     getScheduleByDate : getScheduleByDate,
     getExtraInforDoctorById : getExtraInforDoctorById,
-    getProfileDoctorById : getProfileDoctorById
-    
+    getProfileDoctorById : getProfileDoctorById,
+    getListPatientForDoctor: getListPatientForDoctor,
+    sendRemedy : sendRemedy
 }

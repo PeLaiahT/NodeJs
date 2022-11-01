@@ -4,6 +4,7 @@ import userController from "../controller/userController";
 import doctorController from "../controller/doctorController";
 import patientController from "../controller/patientController";
 import specialtyController from "../controller/specialityController";
+import clinicController from "../controller/clinicController";
 let router = express.Router();
 
 let initWebRoutes = (app) => {
@@ -27,6 +28,8 @@ let initWebRoutes = (app) => {
     router.get('/api/get-schedule-doctor-by-date', doctorController.getScheduleByDate);
     router.get('/api/get-extra-infor-doctor-by-id', doctorController.getExtraInforDoctorById);
     router.get('/api/get-profile-doctor-by-id', doctorController.getProfileDoctorById);
+    router.get('/api/get-list-patient-for-doctor',doctorController.getListPatientForDoctor);
+    router.post('/api/send-remedy', doctorController.sendRemedy);
 
     router.post('/api/patient-book-appointment', patientController.postBookAppointment);
     router.post('/api/verify-book-appointment', patientController.postVerifyBookAppointment);
@@ -34,6 +37,10 @@ let initWebRoutes = (app) => {
     router.post('/api/create-new-specialty', specialtyController.createSpeciality);
     router.get('/api/get-specialty', specialtyController.getAllSpecialty);
     router.get('/api/get-detail-specialty-by-id', specialtyController.getDetailSpecialtyById);
+
+    router.post('/api/create-new-clinic', clinicController.createClinic);
+    router.get('/api/get-clinic', clinicController.getAllClinic);
+    router.get('/api/get-detail-clinic-by-id', clinicController.getDetailClinicById);
 
 
 
