@@ -9,13 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+     static associate(models) {
       // define association here
       Booking.belongsTo(models.User, {
         foreignKey: 'patientId', targetKey: 'id', as: 'patientData'
       })
+      Booking.belongsTo(models.User, {
+        foreignKey: 'doctorId', targetKey: 'id', as: 'doctorBookingData'
+      })
+
       Booking.belongsTo(models.Allcode, {
-        foreignKey: 'timeType', targetKey: 'keyMp', as: 'timeTypeDataPatient'
+        foreignKey: 'timeType', targetKey: 'keyMap', as: 'timeTypeDataPatient'
       })
     }
   };
