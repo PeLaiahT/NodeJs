@@ -15,28 +15,28 @@ app.use(cors({ origin: true }));
 
 connectDB();
 
-app.use((req, res, next) => {
-  var pathName = req.url;
-  if (pathName.includes("/api/login" || pathName.includes("/"))) {
-    next();
-  } else {
-    var token = req.rawHeaders[11].replace("Bearer", "").replace(/ /g, "");
-    if (token) {
-      jwt.verify(token, "bolathai199x", async (err, decoded) => {
-        if (err) {
-          res
-            .status(403)
-            .send({ success: false, message: "Failed to authenticate user." });
-        } else {
-          req.decoded = decoded;
-          next();
-        }
-      });
-    } else {
-      res.status(403).send({ success: false, message: "No Token Provided." });
-    }
-  }
-});
+// app.use((req, res, next) => {
+//   var pathName = req.url;
+//   if (pathName.includes("/api/login" || pathName.includes("/"))) {
+//     next();
+//   } else {
+//     var token = req.rawHeaders[11].replace("Bearer", "").replace(/ /g, "");
+//     if (token) {
+//       jwt.verify(token, "bolathai199x", async (err, decoded) => {
+//         if (err) {
+//           res
+//             .status(403)
+//             .send({ success: false, message: "Failed to authenticate user." });
+//         } else {
+//           req.decoded = decoded;
+//           next();
+//         }
+//       });
+//     } else {
+//       res.status(403).send({ success: false, message: "No Token Provided." });
+//     }
+//   }
+// });
 viewEngine(app);
 initWebRoutes(app);
 

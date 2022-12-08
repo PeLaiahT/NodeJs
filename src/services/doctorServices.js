@@ -1,5 +1,5 @@
 import db, { Sequelize } from "../models/index";
-import lodash from "lodash";
+import lodash,{concat} from "lodash";
 require("dotenv").config();
 import moment from 'moment';
 import emailService from "../services/emailService";
@@ -57,6 +57,22 @@ let getAllDoctors = () => {
     }
   });
 };
+// let getDoctorBySpecialty = (inputId) => {
+//   return new Promise(async(resolve,reject)=>{
+//     try {
+//       if(!inputId){
+//         resolve({
+//           errCode: 1,
+//           errMessage: "Missing parameter"
+//         })
+//       } else {
+//         let doctors = await db.User.findAll
+//       }
+//     } catch (error) {
+//       reject(error);
+//     }
+//   })
+// }
 let checkInput = (inputData) => {
   let arr = [
     "doctorId",
@@ -127,8 +143,8 @@ let saveDetailInforDoctor = (inputData) => {
           doctor.nameClinic = inputData.nameClinic;
           doctor.addressClinic = inputData.addressClinic;
           doctor.note = inputData.note;
-          (doctor.specialtyId = inputData.specialtyId),
-            (doctor.clincId = inputData.clincId);
+          doctor.specialtyId = inputData.specialtyId;
+          doctor.clinicId = inputData.clinicId;
           await doctor.save();
         } else {
           await db.Doctor_Infor.create({
@@ -140,7 +156,7 @@ let saveDetailInforDoctor = (inputData) => {
             addressClinic: inputData.addressClinic,
             note: inputData.note,
             specialtyId: inputData.specialtyId,
-            clincId: inputData.clincId,
+            clinicId: inputData.clinicId,
           });
         }
       }
@@ -435,7 +451,7 @@ let getListPatientForDoctor = (doctorId, date) => {
             {
               model: db.User,
               as: "patientData",
-              attributes: ["email", "firstName", "address", "gender"],
+              attributes: ["email", "firstName", "address", "gender","lastName"],
               include: [
                 {
                   model: db.Allcode,
@@ -447,7 +463,7 @@ let getListPatientForDoctor = (doctorId, date) => {
             {
               model: db.Allcode,
               as: "timeTypeDataPatient",
-              attributes: ["valueEn"],
+              attributes: ["valueEn","valueVi"],
             },
           ],
           raw: false,
@@ -467,6 +483,14 @@ let getListPatientForDoctor = (doctorId, date) => {
 let sendRemedy = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
+      let scheduleEx = await db.Schedule.findOne({
+        where: {
+          doctorId: data.doctorId,
+          date: data.date,
+          timeType: data.timeType
+        },
+        raw: false
+      })
       if (
         !data.email ||
         !data.doctorId ||
@@ -492,6 +516,8 @@ let sendRemedy = (data) => {
           appointment.statusId = "S3";
           await appointment.save();
         }
+        scheduleEx.currentNumber = scheduleEx.currentNumber - 1;
+        await scheduleEx.save();
         await emailService.sendAttachment(data);
 
         resolve({

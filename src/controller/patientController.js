@@ -25,12 +25,6 @@ let postVerifyBookAppointment = async (req, res) => {
   }
 };
 let getListScheduleForPatient = async (req, res) => {
-  if (req.decoded.roleId === 'R2') {
-    return res.status(403).json({
-      errCode: -3,
-      message: "You do not have permisson!"
-    })
-  }
   try {
     let infor = await patientServices.getListScheduleForPatient(req.query.patientId, req.query.status);
     return res.status(200).json(infor);

@@ -23,6 +23,9 @@ module.exports = {
       timeType: {
         type: Sequelize.STRING
       },
+      reason: {
+        type: Sequelize.TEXT('long')
+      },
       token: {
         type: Sequelize.STRING
       },

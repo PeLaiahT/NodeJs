@@ -65,10 +65,10 @@ let getDetailClinicById = (inputid) => {
         let data = await db.Clinic.findOne({
           where: {
             id: inputid,
-          },
-          attributes: ["descriptionHTML", "descriptionMarkdown"],
+          }
         });
-        if (data) {
+        if (data && data.image) {
+          data.image = new Buffer(data.image, 'base64').toString('binary');
           let doctorClinic = [];
           doctorClinic = await db.Doctor_Infor.findAll({
             where: { clinicId: inputid },

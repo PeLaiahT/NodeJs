@@ -6,13 +6,13 @@ let handleLogin = async (req, res) => {
   if (!email || !password) {
     return res.status(500).json({
       errCode: 1,
-      message: "Please input email or password!",
+      errMessage: "Please input email or password!",
     });
   }
   let userData = await userService.handleUserLogin(email, password);
   return res.status(200).json({
     errCode: userData.errCode,
-    message: userData.errMessage,
+    errMessage: userData.errMessage,
     user: userData.user ? userData.user : {},
     token: userData.token,
   });
@@ -49,9 +49,14 @@ let handleDeleteUser = async (req, res) => {
 };
 let handleEditUser = async (req, res) => {
   let data = req.body;
-  let message = await userService.updateUser(data);
-  return res.status(200).json(message);
+  let result = await userService.updateUser(data);
+  return res.status(200).json(result);
 };
+let handleUpdateInfor = async (req,res) => {
+  let data = req.body;
+  let result = await userService.handleUpdateInfor(data);
+  return res.status(200).json(result)
+}
 let getAllCode = async (req, res) => {
   try {
     let data = await userService.getAllCodeService(req.query.type);
@@ -71,4 +76,5 @@ module.exports = {
   handleEditUser: handleEditUser,
   handleDeleteUser: handleDeleteUser,
   getAllCode: getAllCode,
+  handleUpdateInfor: handleUpdateInfor
 };

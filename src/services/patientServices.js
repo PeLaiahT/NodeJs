@@ -40,7 +40,8 @@ let postBookAppointment = (data) => {
         !data.date ||
         !data.fullName ||
         !data.selectedGender ||
-        !data.address
+        !data.address ||
+        !data.reason
       ) {
         resolve({
           errCode: 1,
@@ -76,6 +77,7 @@ let postBookAppointment = (data) => {
                 doctorId: data.doctorId,
                 date: data.date,
                 timeType: data.timeType,
+                reason : data.reason,
                 token: token,
               },
             });
