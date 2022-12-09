@@ -41,7 +41,8 @@ let postBookAppointment = (data) => {
         !data.fullName ||
         !data.selectedGender ||
         !data.address ||
-        !data.reason
+        !data.reason ||
+        !data.birthday
       ) {
         resolve({
           errCode: 1,
@@ -59,6 +60,7 @@ let postBookAppointment = (data) => {
             firstName: data.fullName,
             password: passwordHash,
             phonenumber: data.phoneNumber,
+            DoB: data.birthday
           },
         });
         if (user && user[0]) {

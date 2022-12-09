@@ -160,17 +160,6 @@ let handleDeleteTime = async (req, res) => {
     });
   }
 }
-// let getDoctorBySpecialty = async(req,res) => {
-//   try {
-//     let doctors = await doctorService.getDoctorBySpecialty(req.inputId);
-//     return res.status(200).json(doctors);
-//   } catch (error) {
-//     return res.status(200).json({
-//       errCode: -1,
-//       errMessage: "Error from sever",
-//     });
-//   }
-// }
 module.exports = {
   getTopDoctorHome: getTopDoctorHome,
   getAllDoctors: getAllDoctors,
@@ -184,5 +173,4 @@ module.exports = {
   handleDeleteSchedule: handleDeleteSchedule,
   sendRemedy: sendRemedy,
   handleDeleteTime: handleDeleteTime,
-  // getDoctorBySpecialty: getDoctorBySpecialty
 };

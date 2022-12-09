@@ -57,22 +57,6 @@ let getAllDoctors = () => {
     }
   });
 };
-// let getDoctorBySpecialty = (inputId) => {
-//   return new Promise(async(resolve,reject)=>{
-//     try {
-//       if(!inputId){
-//         resolve({
-//           errCode: 1,
-//           errMessage: "Missing parameter"
-//         })
-//       } else {
-//         let doctors = await db.User.findAll
-//       }
-//     } catch (error) {
-//       reject(error);
-//     }
-//   })
-// }
 let checkInput = (inputData) => {
   let arr = [
     "doctorId",

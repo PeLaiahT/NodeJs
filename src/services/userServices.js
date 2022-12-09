@@ -133,6 +133,7 @@ let createNewUser = (data) => {
                     gender: data.gender,
                     roleId: data.role,
                     positionId: data.position,
+                    DoB: data.dob,
                     image: data.avatar,
                 });
             }
@@ -186,6 +187,7 @@ let updateUser = (data) => {
                 user.positionId = data.positionId;
                 user.gender = data.gender;
                 user.phonenumber = data.phonenumber;
+                user.DoB = data.dob;
                 if (data.avatar) {
                     user.image = data.avatar;
                 }
